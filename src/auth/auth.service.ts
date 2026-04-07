@@ -7,6 +7,10 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './interfaces/jcw-payload.interface';
+import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
+
+const BCRYPT_SALT_ROUNDS = 10;
 
 @Injectable()
 export class AuthService {
@@ -15,13 +19,15 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(email: string, pass: string) {
+  async register(registerDto: RegisterDto) {
+    const { email, password } = registerDto;
+
     const existingUser = this.usersService.findOne(email);
     if (existingUser) {
       throw new BadRequestException('Email already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(pass, 10);
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
     const newUser = this.usersService.create({
       id: Date.now(),
       email,
@@ -31,10 +37,12 @@ export class AuthService {
     return { id: newUser.id, email: newUser.email };
   }
 
-  async signIn(email: string, pass: string) {
+  async signIn(loginDto: LoginDto) {
+    const { email, password } = loginDto;
+
     const user = this.usersService.findOne(email);
 
-    if (!user || !(await bcrypt.compare(pass, user.password))) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException();
     }
 

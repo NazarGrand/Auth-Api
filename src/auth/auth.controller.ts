@@ -20,14 +20,14 @@ export class AuthController {
   @Public()
   @Post('register')
   register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto.email, registerDto.password);
+    return this.authService.register(registerDto);
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body() loginDto: LoginDto) {
-    return this.authService.signIn(loginDto.email, loginDto.password);
+    return this.authService.signIn(loginDto);
   }
 
   @Public()
