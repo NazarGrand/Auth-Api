@@ -29,6 +29,8 @@
 
 ```bash
 $ yarn install
+$ cp .env.example .env
+$ yarn db:up
 ```
 
 ## Compile and run the project
@@ -42,6 +44,33 @@ $ yarn run start:dev
 
 # production mode
 $ yarn run start:prod
+```
+
+## Database
+
+This project uses PostgreSQL in Docker and TypeORM for persistence.
+
+```bash
+$ yarn db:up
+$ yarn start:dev
+```
+
+Default database connection values are stored in `.env.example`.
+
+### Manual migrations
+
+```bash
+# create empty migration
+$ yarn migration:create
+
+# generate migration from entity changes
+$ yarn migration:generate
+
+# apply pending migrations
+$ yarn migration:run
+
+# rollback last migration
+$ yarn migration:revert
 ```
 
 ## Run tests
